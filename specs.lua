@@ -81,7 +81,7 @@ specs = {
     run =
     {
       loved = '"<love2d.path><love2d.name>" "<project.path>bin/Love/<project.name>.love"',
-      native = 'open -a -n "<project.path>bin/<system.name><system.arch>/<project.name>"'
+      native = '"<project.path>bin/<system.name><system.arch>/<project.name>"'
     }
   },
 

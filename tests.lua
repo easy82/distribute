@@ -40,10 +40,14 @@ local function testArgument()
     "games created with the awesome LOVE framework. It creates a .love file\n" ..
     "and a native executable depending on the host operating system.\n\n"
 
-  if arg[1] and arg[1]:find(".love") then
-    usage = usage .. "Usage: love distribute.love PathToYourProject"
-  else
-    usage = usage .. "Usage: love distribute PathToYourProject"
+  if arg[1] then
+    local a = trimStr(arg[1]:gsub('"', ''))
+
+    if a:find(".love") then
+      usage = usage .. "Usage: love distribute.love PathToYourProject"
+    else
+      usage = usage .. "Usage: love distribute PathToYourProject"
+    end
   end
 
   return try(project.path == "", usage)

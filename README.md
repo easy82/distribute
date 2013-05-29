@@ -39,6 +39,14 @@ Usage
 4. If everything went all right, you can run the .love file by hitting F5, or the native executable by hitting F6. You will find the binaries inside your project directory, under the 'bin' folder.
 
 
+Known Issues
+------------
+
+- LDT is completely untested on MacOSX! Mac developer needed...
+
+- LDT will pack the binaries it finds: 32 or 64 bits, and won't check if they are really 32 or 64 bits.
+
+
 License
 -------
 
