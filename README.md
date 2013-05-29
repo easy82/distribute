@@ -47,6 +47,14 @@ Known Issues
 - LDT will pack the binaries it finds: 32 or 64 bits, and won't check if they are really 32 or 64 bits.
 
 
+Contribute
+----------
+
+- Source: https://github.com/easy82/distribute
+
+- E-mail: easy82 <dot> contact <at> gmail <dot> com
+
+
 License
 -------
 
