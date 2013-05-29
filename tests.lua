@@ -115,7 +115,7 @@ local function testArchitecture()
     end
   end
 
-  writeOutput("Architecture: " .. system.arch)
+  writeOutput("System architecture: " .. system.arch)
   return true
 end
 
@@ -200,21 +200,32 @@ end
 local function createDirectories()
   local binDir = project.path .. "bin"
   if testDir(binDir) == false then
-    os.execute('mkdir "' .. binDir .. '"')
+    if tonumber(os.execute('mkdir "' .. binDir .. '"')) ~= 0 then
+      writeOutput("Error: Could not create folder: " .. binDir)
+      return false
+    end
     writeOutput("Created " .. binDir)
   end
 
   local loveDir = binDir .. system.sep .. "Love" 
   if testDir(loveDir) == false then
-    os.execute('mkdir "' .. loveDir .. '"')
+    if tonumber(os.execute('mkdir "' .. loveDir .. '"')) ~= 0 then
+      writeOutput("Error: Could not create folder: " .. loveDir)
+      return false
+    end
     writeOutput("Created " .. loveDir)
   end
 
   local systemDir = binDir .. system.sep .. system.name .. system.arch
   if testDir(systemDir) == false then
-    os.execute('mkdir "' .. systemDir .. '"')
+    if tonumber(os.execute('mkdir "' .. systemDir .. '"')) ~= 0 then
+      writeOutput("Error: Could not create folder: " .. systemDir)
+      return false
+    end
     writeOutput("Created " .. systemDir)
   end
+
+  return true
 end
 
 local function createLove()
@@ -252,22 +263,24 @@ function createBinaries()
   elseif creationProgress == 5 then -- Does it contain main.lua?
     creationProgress = testMainLua() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 6 then -- Search for required apps
+  elseif creationProgress == 6 then -- Search for LOVE framework
     writeOutput("\nSearching for required applications ...")
     creationProgress = testLove2D() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 7 then
+  elseif creationProgress == 7 then -- Find an archive manager
     creationProgress = testArchiveManagers() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 8 then -- Creating .love file
-    writeOutput("\nCreating .love file ...")
-    createDirectories()
+  elseif creationProgress == 8 then -- Create directory structure
+    writeOutput("\nCreating binaries ...")
+    creationProgress = createDirectories() == true and creationProgress + 1 or -1
+
+  elseif creationProgress == 9 then -- Create .love file
     creationProgress = createLove() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 9 then
+  elseif creationProgress == 10 then -- Create native executable
     creationProgress = createExecuatble() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 10 then
+  elseif creationProgress == 11 then
     writeOutput("\nDone!\n")
   end
 end

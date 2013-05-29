@@ -9,7 +9,7 @@ function love.load()
   loveGameIcon = love.graphics.newImage("data/LoveGame.png")
   loveAppIcon = love.graphics.newImage("data/LoveApp.png")
 
-  numCreationSteps = 10
+  numCreationSteps = 11
   oldCreationProgress = 0
   creationProgress = 1
 end
