@@ -1,13 +1,13 @@
 Description
 -----------
 
-Love Distribution Tool (LDT) is a command line application for distributing games created with the awesome LÖVE framework. It creates a .love file and a native executable depending on the host operating system.
+Love Distribution Tool (LDT) is a command line application for distributing games created with the awesome LOVE framework. It creates a .love file and a native executable depending on the host operating system.
 
 
 Requirements
 ------------
 
-1. You need to have the LÖVE framework installed. If you don't have it already, download it at http://love2d.org/
+1. You need to have the LOVE framework installed. If you don't have it already, download it at http://love2d.org/
 
 2. On Linux and on MacOSX LDT assumes you have zip installed on your system.
 
@@ -24,7 +24,7 @@ You just need to unzip the archieve whereever you want it.
 
 B) Installing on Windows:
 
-Unzip the arhieve into the directory where LÖVE is installed on your system. This is usually at 'C:\Program Files\LOVE'.
+Unzip the arhieve into the directory where LOVE is installed on your system. This is usually at 'C:\Program Files\LOVE'.
 
 
 Usage

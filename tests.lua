@@ -37,7 +37,7 @@ local function testArgument()
 
   -- Display help if no good argument was given
   local usage = "Love Distribution Tool (LDT) is a command line application for distributing\n" ..
-    "games created with the awesome LÖVE framework. It creates a .love file\n" ..
+    "games created with the awesome LOVE framework. It creates a .love file\n" ..
     "and a native executable depending on the host operating system.\n\n"
 
   if arg[1] and arg[1]:find(".love") then
@@ -152,18 +152,18 @@ local function testLove2D()
            testFile(love2d.path .. "DevIL.dll") == false or
            testFile(love2d.path .. "OpenAL32.dll") == false then
 
-          writeOutput("Error: Couldn't find LÖVE DLLs!")
+          writeOutput("Error: Couldn't find LOVE DLLs!")
           return false
         end          
 
-        writeOutput("Found LÖVE DLLs")
+        writeOutput("Found LOVE DLLs")
       end
 
       return true
     end
   end
 
-  writeOutput("Error: Couldn't find LÖVE framework!")
+  writeOutput("Error: Couldn't find LOVE framework!")
   return false
 end
 
