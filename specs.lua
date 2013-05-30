@@ -1,5 +1,48 @@
 -- Editable platform specific parameters and instructions goes here
+-- Mac should be checked before Linux because Mac has /Applications while both Linux and Mac has /home
 specs = {
+  -- MacOSX
+  {
+    system =
+    {
+      name = 'MacOSX',
+      path = '/Applications',
+      sep = '/'
+    },
+    archivers = {
+      {
+        name = 'zip',
+        paths =
+        {
+          '',
+          -- You can add more paths here ...
+        },
+        build = 
+          'cd "<project.path>" && ' .. 
+          '"<archiver.path><archiver.name>" -r "bin/Love/<project.name>.love" * -x bin\\*'
+      },
+      -- You can add more archivers here ...
+    },
+    love2d =
+    {
+      name = 'love',
+      paths =
+      {
+        '/Applications/love.app/Contents/MacOS/',
+        -- You can add more paths here ...
+      },
+      build = 
+        'cd "<project.path>bin" && ' ..
+        'cat "<love2d.path><love2d.name>" "Love/<project.name>.love" > "<system.name><system.arch>/<project.name>" && ' ..
+        'chmod a+x "<system.name><system.arch>/<project.name>"'
+    },
+    run =
+    {
+      loved = '"<love2d.path><love2d.name>" "<project.path>bin/Love/<project.name>.love"',
+      native = '"<project.path>bin/<system.name><system.arch>/<project.name>"'
+    }
+  },
+
   -- Linux
   {
     system =
@@ -39,48 +82,6 @@ specs = {
     run =
     {
       loved = 'love "<project.path>bin/Love/<project.name>.love"',
-      native = '"<project.path>bin/<system.name><system.arch>/<project.name>"'
-    }
-  },
-
-  -- MacOSX
-  {
-    system =
-    {
-      name = 'MacOSX',
-      path = '/Applications',
-      sep = '/'
-    },
-    archivers = {
-      {
-        name = 'zip',
-        paths =
-        {
-          '',
-          -- You can add more paths here ...
-        },
-        build = 
-          'cd "<project.path>" && ' .. 
-          '"<archiver.path><archiver.name>" -r "bin/Love/<project.name>.love" * -x bin\\*'
-      },
-      -- You can add more archivers here ...
-    },
-    love2d =
-    {
-      name = 'love',
-      paths =
-      {
-        '/Applications/love.app/Contents/MacOS/',
-        -- You can add more paths here ...
-      },
-      build = 
-        'cd "<project.path>bin" && ' ..
-        'cat "<love2d.path><love2d.name>" "Love/<project.name>.love" > "<system.name><system.arch>/<project.name>" && ' ..
-        'chmod a+x "<system.name><system.arch>/<project.name>"'
-    },
-    run =
-    {
-      loved = '"<love2d.path><love2d.name>" "<project.path>bin/Love/<project.name>.love"',
       native = '"<project.path>bin/<system.name><system.arch>/<project.name>"'
     }
   },
