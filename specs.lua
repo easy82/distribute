@@ -14,7 +14,7 @@ specs = {
         name = 'zip',
         paths =
         {
-          '',
+          '/usr/bin/',
           -- You can add more paths here ...
         },
         build = 
@@ -57,7 +57,7 @@ specs = {
         name = 'zip',
         paths =
         {
-          '',
+          '/usr/bin/',
           -- You can add more paths here ...
         },
         build =
@@ -107,6 +107,18 @@ specs = {
         build = 
           'cd /d "<project.path>" && ' ..
           '"<archiver.path><archiver.name>" a -r -tzip "bin\\Love\\<project.name>.love" * -xr!bin'
+      },
+      {
+        name = 'WinRAR.exe',
+        paths =
+        {
+          'C:\\Program Files (x86)\\WinRAR\\',
+          'C:\\Program Files\\WinRAR\\',
+          -- You can add more paths here ...
+        },
+        build = 
+          'cd /d "<project.path>" && ' ..
+          '"<archiver.path><archiver.name>" a -r -afzip -xbin -xbin\\* "bin\\Love\\<project.name>.love" *'
       },
       -- You can add more archivers here ...
     },

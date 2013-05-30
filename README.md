@@ -11,7 +11,7 @@ Requirements
 
 2. On Linux and on MacOSX LDT assumes you have zip installed on your system.
 
-3. On Windows LDT needs 7-Zip to be installed on your system. You can download it from http://www.7-zip.org/
+3. On Windows LDT needs 7-Zip or WinRAR to be installed on your system. You can download 7-Zip from http://www.7-zip.org/ or WinRAR from http://www.rarlab.com/
 
 
 Installation

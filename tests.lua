@@ -158,11 +158,11 @@ local function testArchiveManagers()
     for _, p in pairs(archiver.paths) do
       local path = replaceKeywords(p)
 
-      if tonumber(os.execute('"' .. path .. a.name .. '"')) == 0 then
+      if testFile(path .. a.name) == true then
         archiver.name = a.name
         archiver.path = path
         archiver.build = a.build
-        writeOutput("Archive manager: " .. archiver.name)
+        writeOutput("Archive manager: " .. archiver.path .. archiver.name)
         return true
       end
     end

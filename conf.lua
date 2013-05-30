@@ -1,5 +1,5 @@
 function love.conf(t)
-  t.title = "Love Distribution Tool v0.1"
+  t.title = "Love Distribution Tool v0.2"
   t.author = "Peter Szöllősi (easy82)"
   t.url = "https://github.com/easy82/distribute"
   t.identity = "distribute"
