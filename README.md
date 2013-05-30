@@ -19,12 +19,12 @@ Installation
 
 A) Installing on Linux or MacOSX:
 
-If you have dowloaded the .zip version: just unzip it whereever you want it.
+Download LDT and put it whereever you want it.
 
 
 B) Installing on Windows:
 
-If you have dowloaded the .zip version: unzip it into the directory where LOVE is installed on your system (or if you've downloaded the .love version: put it into the directory where LOVE is installed on your system). This is usually at 'C:\Program Files\LOVE'.
+Download LDT and put it into the directory where LOVE is installed on your system. This is usually at 'C:\Program Files\LOVE'.
 
 
 Usage
@@ -34,7 +34,7 @@ Usage
 
 2. Navigate to the directory where you've put LDT to. Example: 'cd Downloads' (or 'cd /d C:\Program Files\LOVE' on Windows).
 
-3. Type 'love distribute PathToYourProject' (or if you're using the .love version, type 'love distribute.love PathToYourProject'). Example: 'love distribute ~/MyProjects/MyGame' (or 'love distribute F:\MyProjects\MyGame' on Windows).
+3. Type 'love distribute.love PathToYourProject'. Example: 'love distribute.love ~/MyProjects/MyGame' (or 'love distribute.love F:\MyProjects\MyGame' on Windows).
 
 4. If everything went all right, you can run the .love file by hitting F5, or the native executable by hitting F6. You will find the binaries inside your project directory, under the 'bin' folder.
 
@@ -52,7 +52,7 @@ Contribute
 
 - Source: https://github.com/easy82/distribute
 
-- E-mail: easy82 <dot> contact <at> gmail <dot> com
+- E-mail: easy82 (dot) contact (at) gmail (dot) com
 
 
 License
