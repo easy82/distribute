@@ -42,6 +42,7 @@ end
 
 -- This piece of code is originally from https://github.com/lualatex/lualibs/blob/master/lualibs-os.lua
 function testOutput(command)
+  if not io.popen then return "" end -- Workaround: Love 0.8.0 has no io.popen on Mac, 0.9.0 will have
   local h = io.popen(command, "r")
   return h and h:read("*all") or ""
 end

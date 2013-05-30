@@ -36,21 +36,11 @@ local function testArgument()
   end
 
   -- Display help if no good argument was given
-  local usage = "Love Distribution Tool (LDT) is a command line application for distributing\n" ..
+  return try(project.path == "",
+    "Love Distribution Tool (LDT) is a command line application for distributing\n" ..
     "games created with the awesome LOVE framework. It creates a .love file\n" ..
-    "and a native executable depending on the host operating system.\n\n"
-
-  if arg[1] then
-    local a = trimStr(arg[1]:gsub('"', ''))
-
-    if a:find(".love") then
-      usage = usage .. "Usage: love distribute.love PathToYourProject"
-    else
-      usage = usage .. "Usage: love distribute PathToYourProject"
-    end
-  end
-
-  return try(project.path == "", usage)
+    "and a native executable depending on the host operating system.\n\n" ..
+    "Usage: love distribute.love PathToYourProject")
 end
 
 local function testOperatingSystem()
@@ -87,34 +77,19 @@ end
 
 -- This piece of code is originally from https://github.com/lualatex/lualibs/blob/master/lualibs-os.lua
 local function testArchitecture()
-  system.arch = "32"
+  system.arch = "" -- Generic by default
 
   if system.name == "Windows" then
-    local a = os.getenv("PROCESSOR_ARCHITECTURE") or ""
-
-    if a:find("AMD64") then
-      system.arch = "64"
-    end
+    system.arch = os.getenv("PROCESSOR_ARCHITECTURE") or ""
 
   elseif system.name == "Linux" then
-    local a = os.getenv("HOSTTYPE") or testOutput("uname -m") or ""
-
-    if a:find("x86_64") then
-      system.arch = "64"
-    elseif a:find("ppc") then
-      system.arch = "PPC"
-    end
+    system.arch = os.getenv("HOSTTYPE") or testOutput("uname -m") or ""
 
   elseif system.name == "MacOSX" then
-    local a = testOutput("echo $HOSTTYPE") or ""
-
-    if a:find("x86_64") then
-      system.arch = "64"
-    elseif a ~= "" then
-      system.arch = "PPC"
-    end
+    system.arch = testOutput("echo $HOSTTYPE") or ""
   end
 
+  if system.arch ~= "" then system.arch = "-" .. system.arch:gsub("[\n\r]", "") end
   writeOutput("System architecture: " .. system.arch)
   return true
 end
