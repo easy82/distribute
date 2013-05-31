@@ -6,7 +6,11 @@ specs = {
     system =
     {
       name = 'MacOSX',
-      path = '/Applications',
+      paths =
+      {
+        '/Applications',
+        -- You can add more paths here ...
+      },
       sep = '/'
     },
     archivers = {
@@ -48,7 +52,11 @@ specs = {
     system =
     {
       name = 'Linux',
-      path = '/home',
+      paths =
+      {
+        '/home',
+        -- You can add more paths here ...
+      },
       sep = '/'
     },
     archivers =
@@ -91,7 +99,14 @@ specs = {
     system =
     {
       name = 'Windows',
-      path = 'C:\\Windows',
+      paths =
+      {
+        'C:\\Windows',
+        'D:\\Windows',
+        'E:\\Windows',
+        'F:\\Windows',
+        -- You can add more paths here ...
+      },
       sep = '\\'
     },
     archivers =
@@ -102,6 +117,12 @@ specs = {
         {
           'C:\\Program Files (x86)\\7-Zip\\',
           'C:\\Program Files\\7-Zip\\',
+          'D:\\Program Files (x86)\\7-Zip\\',
+          'D:\\Program Files\\7-Zip\\',
+          'E:\\Program Files (x86)\\7-Zip\\',
+          'E:\\Program Files\\7-Zip\\',
+          'F:\\Program Files (x86)\\7-Zip\\',
+          'F:\\Program Files\\7-Zip\\',
           -- You can add more paths here ...
         },
         build = 
@@ -114,6 +135,12 @@ specs = {
         {
           'C:\\Program Files (x86)\\WinRAR\\',
           'C:\\Program Files\\WinRAR\\',
+          'D:\\Program Files (x86)\\WinRAR\\',
+          'D:\\Program Files\\WinRAR\\',
+          'E:\\Program Files (x86)\\WinRAR\\',
+          'E:\\Program Files\\WinRAR\\',
+          'F:\\Program Files (x86)\\WinRAR\\',
+          'F:\\Program Files\\WinRAR\\',
           -- You can add more paths here ...
         },
         build = 
@@ -129,6 +156,12 @@ specs = {
       {
         'C:\\Program Files (x86)\\LOVE\\',
         'C:\\Program Files\\LOVE\\',
+        'D:\\Program Files (x86)\\LOVE\\',
+        'D:\\Program Files\\LOVE\\',
+        'E:\\Program Files (x86)\\LOVE\\',
+        'E:\\Program Files\\LOVE\\',
+        'F:\\Program Files (x86)\\LOVE\\',
+        'F:\\Program Files\\LOVE\\',
         -- You can add more paths here ...
       },
       build = 

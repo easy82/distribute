@@ -1,5 +1,6 @@
 system = {
   name = '',
+  paths = {},
   path = '',
   sep = '',
   arch = '',
@@ -45,6 +46,7 @@ end
 
 local function testOperatingSystem()
   system.name = ""
+  system.paths = {}
   system.path = ""
   system.sep = ""
   system.icon = nil
@@ -56,20 +58,28 @@ local function testOperatingSystem()
   run.excutable = ""
 
   -- Test directories to detect host os
-  for _, v in pairs(specs) do
-    if testDir(v.system.path) == true then
-      system.name = v.system.name
-      system.path = v.system.path
-      system.sep = v.system.sep
-      system.icon = love.graphics.newImage("data/" .. system.name .. ".png")
-      archivers = v.archivers
-      love2d.name = v.love2d.name
-      love2d.paths = v.love2d.paths
-      love2d.build = v.love2d.build
-      run.loved = v.run.loved
-      run.native = v.run.native
-      break
+  local found = false
+  for _, s in pairs(specs) do
+    system.paths = s.system.paths
+
+    for _, p in pairs(system.paths) do
+      if testDir(p) == true then
+        system.path = p
+        system.name = s.system.name
+        system.sep = s.system.sep
+        system.icon = love.graphics.newImage("data/" .. system.name .. ".png")
+        archivers = s.archivers
+        love2d.name = s.love2d.name
+        love2d.paths = s.love2d.paths
+        love2d.build = s.love2d.build
+        run.loved = s.run.loved
+        run.native = s.run.native
+        found = true
+        break
+      end
     end
+
+    if found == true then break end
   end
 
   return try(system.name == "", "Error: Unknown operating system!", "Operating system: " .. system.name)
@@ -175,7 +185,7 @@ end
 local function createDirectories()
   local binDir = project.path .. "bin"
   if testDir(binDir) == false then
-    if tonumber(os.execute('mkdir "' .. binDir .. '"')) ~= 0 then
+    if testCommand('mkdir "' .. binDir .. '"') == false then
       writeOutput("Error: Could not create folder: " .. binDir)
       return false
     end
@@ -184,7 +194,7 @@ local function createDirectories()
 
   local loveDir = binDir .. system.sep .. "Love" 
   if testDir(loveDir) == false then
-    if tonumber(os.execute('mkdir "' .. loveDir .. '"')) ~= 0 then
+    if testCommand('mkdir "' .. loveDir .. '"') == false then
       writeOutput("Error: Could not create folder: " .. loveDir)
       return false
     end
@@ -193,7 +203,7 @@ local function createDirectories()
 
   local systemDir = binDir .. system.sep .. system.name .. system.arch
   if testDir(systemDir) == false then
-    if tonumber(os.execute('mkdir "' .. systemDir .. '"')) ~= 0 then
+    if testCommand('mkdir "' .. systemDir .. '"') == false then
       writeOutput("Error: Could not create folder: " .. systemDir)
       return false
     end
@@ -206,14 +216,14 @@ end
 local function createLove()
   run.loved = replaceKeywords(run.loved)
   archiver.build = replaceKeywords(archiver.build)
-  createdLoveFile = try(tonumber(os.execute(archiver.build)) ~= 0, "Error: Could not create .love file!", "Created .love file! (Hit F5 to run)")
+  createdLoveFile = try(testCommand(archiver.build) == false, "Error: Could not create .love file!", "Created .love file! (Hit F5 to run)")
   return createdLoveFile
 end
 
 local function createExecuatble()
   run.native = replaceKeywords(run.native)
   love2d.build = replaceKeywords(love2d.build)
-  createdExecutable = try(tonumber(os.execute(love2d.build)) ~= 0, "Error: Could not create executable!", "Created executable! (Hit F6 to run)")
+  createdExecutable = try(testCommand(love2d.build) == false, "Error: Could not create executable!", "Created executable! (Hit F6 to run)")
   return createdExecutable
 end
 
@@ -230,7 +240,7 @@ function createBinaries()
 
   elseif creationProgress == 3 then -- Detect if architecture is 32 or 64 bits
     creationProgress = testArchitecture() == true and creationProgress + 1 or -1
-
+creationProgress = -1
   elseif creationProgress == 4 then -- Does the project exists?
     writeOutput("\nSetting up project details ...")
     creationProgress = testProject() == true and creationProgress + 1 or -1

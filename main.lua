@@ -19,11 +19,11 @@ function love.keyreleased(k)
     love.event.quit()
   end
   -- Run .love file if available
-  if k == "f5" and createdLoveFile and tonumber(os.execute(run.loved)) ~= 0 then
+  if k == "f5" and createdLoveFile and testCommand(run.loved) == false then
     writeOutput("Error: Could not run .love file!")
   end
   -- Run executable if available
-  if k == "f6" and createdExecutable and tonumber(os.execute(run.native)) ~= 0 then
+  if k == "f6" and createdExecutable and testCommand(run.native) == false then
     writeOutput("Error: Could not run executable!")
   end
 end

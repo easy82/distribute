@@ -26,8 +26,12 @@ function splitStr(str, sep)
   return ret
 end
 
+function testCommand(command)
+  return tonumber(os.execute(command)) == 0 and true or false
+end
+
 function testDir(path)
-  return tonumber(os.execute('cd "' .. path .. '"')) == 0 and true or false
+  return testCommand('cd "' .. path .. '"')
 end
 
 function testFile(file)
