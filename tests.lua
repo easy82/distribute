@@ -240,7 +240,7 @@ function createBinaries()
 
   elseif creationProgress == 3 then -- Detect if architecture is 32 or 64 bits
     creationProgress = testArchitecture() == true and creationProgress + 1 or -1
-creationProgress = -1
+
   elseif creationProgress == 4 then -- Does the project exists?
     writeOutput("\nSetting up project details ...")
     creationProgress = testProject() == true and creationProgress + 1 or -1
