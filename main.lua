@@ -9,9 +9,7 @@ function love.load()
   loveGameIcon = love.graphics.newImage("data/LoveGame.png")
   loveAppIcon = love.graphics.newImage("data/LoveApp.png")
 
-  numCreationSteps = 11
-  oldCreationProgress = 0
-  creationProgress = 1
+  resetAll()
 end
 
 function love.keyreleased(k)

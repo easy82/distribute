@@ -7,9 +7,9 @@ Love Distribution Tool (LDT) is a command line application for distributing game
 Requirements
 ------------
 
-1. You need to have the LOVE framework installed. If you don't have it already, download it at http://love2d.org/
+1. You need to have the LOVE 0.8.0 framework installed. If you don't have it already, download it at http://love2d.org/
 
-2. On Linux and on MacOSX LDT assumes you have zip installed on your system.
+2. On Linux and on MacOSX LDT assumes you have zip installed on your system (which you most probably do).
 
 3. On Windows LDT needs 7-Zip or WinRAR to be installed on your system. You can download 7-Zip from http://www.7-zip.org/ or WinRAR from http://www.rarlab.com/
 

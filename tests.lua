@@ -1,35 +1,41 @@
-system = {
-  name = '',
-  paths = {},
-  path = '',
-  sep = '',
-  arch = '',
-  icon = nil
-}
-archivers = {}
-archiver = {
-  name = '',
-  path = '',
-  build = ''
-}
-love2d = {
-  name = '',
-  paths = {},
-  path = '',
-  build = ''
-}
-run = {
-  loved = '',
-  native = ''
-}
-project = {
-  name = '',
-  path = ''
-}
+function resetAll()
+  system = {
+    name = '',
+    paths = {},
+    path = '',
+    sep = '',
+    arch = '',
+    icon = nil
+  }
+  archivers = {}
+  archiver = {
+    name = '',
+    paths = {},
+    path = '',
+    build = ''
+  }
+  love2d = {
+    name = '',
+    paths = {},
+    path = '',
+    build = ''
+  }
+  run = {
+    loved = '',
+    native = ''
+  }
+  project = {
+    name = '',
+    path = ''
+  }
+  createdLoveFile = false
+  createdExecutable = false
+  numCreationSteps = 11
+  oldCreationProgress = 0
+  creationProgress = 1
+end
 
 local function testArgument()
-  project.path = ""
-  
   if arg[2] then
     -- Remove quotes and trim white spaces from project path
     project.path = arg[2]:gsub('"', '')
@@ -45,18 +51,6 @@ local function testArgument()
 end
 
 local function testOperatingSystem()
-  system.name = ""
-  system.paths = {}
-  system.path = ""
-  system.sep = ""
-  system.icon = nil
-  archivers = {}
-  love2d.name = ""
-  love2d.paths = {}
-  love2d.build = ""
-  run.loved = ""
-  run.excutable = ""
-
   -- Test directories to detect host os
   local found = false
   for _, s in pairs(specs) do
@@ -87,8 +81,6 @@ end
 
 -- This piece of code is originally from https://github.com/lualatex/lualibs/blob/master/lualibs-os.lua
 local function testArchitecture()
-  system.arch = "" -- Generic by default
-
   if system.name == "Windows" then
     system.arch = os.getenv("PROCESSOR_ARCHITECTURE") or ""
 
@@ -105,8 +97,6 @@ local function testArchitecture()
 end
 
 local function testProject()
-  project.name = ""
-
   -- Extract project name from path
   local extract = splitStr(project.path, system.sep)
   project.name = extract[#extract]
@@ -125,8 +115,6 @@ local function testMainLua()
 end
 
 local function testLove2D()
-  love2d.path = ""
-
   -- Seek for LOVE at its possible directories
   for _, p in pairs(love2d.paths) do
     local path = replaceKeywords(p)
@@ -157,10 +145,6 @@ local function testLove2D()
 end
 
 local function testArchiveManagers()
-  archiver.name = ""
-  archiver.path = ""
-  archiver.build = ""
-
   -- Seek for archivers at their possible directories
   for _, a in pairs(archivers) do
     archiver.paths = a.paths
@@ -189,7 +173,7 @@ local function createDirectories()
       writeOutput("Error: Could not create folder: " .. binDir)
       return false
     end
-    writeOutput("Created " .. binDir)
+    writeOutput("Created folder: " .. binDir)
   end
 
   local loveDir = binDir .. system.sep .. "Love" 
@@ -198,7 +182,7 @@ local function createDirectories()
       writeOutput("Error: Could not create folder: " .. loveDir)
       return false
     end
-    writeOutput("Created " .. loveDir)
+    writeOutput("Created folder: " .. loveDir)
   end
 
   local systemDir = binDir .. system.sep .. system.name .. system.arch
@@ -207,7 +191,7 @@ local function createDirectories()
       writeOutput("Error: Could not create folder: " .. systemDir)
       return false
     end
-    writeOutput("Created " .. systemDir)
+    writeOutput("Created folder: " .. systemDir)
   end
 
   return true
@@ -234,11 +218,11 @@ function createBinaries()
   if creationProgress == 1 then -- Is there any arguments?
     creationProgress = testArgument() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 2 then -- Detect which operating system is this
+  elseif creationProgress == 2 then -- Detect operating system
     writeOutput("Detecting operating system ...")
     creationProgress = testOperatingSystem() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 3 then -- Detect if architecture is 32 or 64 bits
+  elseif creationProgress == 3 then -- Detect architecture
     creationProgress = testArchitecture() == true and creationProgress + 1 or -1
 
   elseif creationProgress == 4 then -- Does the project exists?
