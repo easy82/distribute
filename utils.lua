@@ -37,16 +37,36 @@ end
 function testFile(file)
   local f = io.open(file, "r")
   if f ~= nil then
-    io.close(f)
+    f:close()
     return true
   else
     return false
   end
 end
 
--- This piece of code is originally from https://github.com/lualatex/lualibs/blob/master/lualibs-os.lua
 function testOutput(command)
-  if not io.popen then return "" end -- Workaround: Love 0.8.0 has no io.popen on Mac, 0.9.0 will have
+  -- Bugfix: Love 0.8.0 has no io.popen on Mac, 0.9.0 will have
+  -- Create a temporary file and redirect command output to it
+  if not io.popen then
+    local temp = "tempoutp"
+    if testCommand(command .. " > " .. temp) == true then
+      local f = io.input(temp)
+      if f ~= nil then
+        local t = f:read("*all")
+        f:close()
+        os.execute("rm " .. temp)
+        print("temporary file used")
+        return t
+      else
+        return ""
+      end
+    else
+      return ""
+    end
+  end
+
+  -- This piece of code is originally from https://github.com/lualatex/lualibs/blob/master/lualibs-os.lua
+  -- Use the regular way to get command output
   local h = io.popen(command, "r")
   return h and h:read("*all") or ""
 end
