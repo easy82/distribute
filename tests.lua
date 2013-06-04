@@ -100,27 +100,43 @@ local function testDistribution()
       if output ~= "" then
         -- Extract distro name from filename
         local replaced = v:gsub("<distro>", "(%%a+)")
-        local guess = output:match(replaced) or ""
+        local distro = output:match(replaced) or ""
         local release = ""
 
-        if guess == "lsb" then
+        if distro == "os" then
+          -- This is probably '/etc/os-release'
+          -- http://www.freedesktop.org/software/systemd/man/os-release.html
+          local replaced = v:gsub("<distro>", distro)
+          local output = readOutput("cat " .. replaced)
+
+          if output ~= "" then
+            -- Extract distro name and release if possible
+            system.name = output:match("ID=(%a+)") or ""
+            release = output:match("VERSION_ID=(%d+.%d+)") or output:match("VERSION_ID=(%d+)") or ""
+          end
+
+        elseif distro == "lsb" then
+          -- This is probably '/etc/lsb-release'
           -- LSB distro: let's assume it's Ubuntu by default
           system.name = "ubuntu"
-          local output = readOutput("cat /etc/lsb-release")
+          local replaced = v:gsub("<distro>", distro)
+          local output = readOutput("cat " .. replaced)
 
           if output ~= "" then
             -- Extract distro name and release if possible
             system.name = output:match("DISTRIB_ID=(%a+)") or ""
-            release = output:match("DISTRIB_RELEASE=(%d+)") or ""
+            release = output:match("DISTRIB_RELEASE=(%d+.%d+)") or output:match("DISTRIB_RELEASE=(%d+)") or ""
           end
 
-        elseif guess ~= "" then
-          -- Non-LSB distro: extract release by pattern matching
-          system.name = guess
-          local replaced = v:gsub("<distro>", system.name)
+        elseif distro ~= "" then
+          system.name = distro
+          local replaced = v:gsub("<distro>", distro)
           local output = readOutput("cat " .. replaced)
 
-          if output ~= "" then release = output:match("%d+.%d+") or output:match("%d+") or "" end
+          if output ~= "" then
+            -- Extract release by pattern matching
+            release = output:match("%d+.%d+") or output:match("%d+") or ""
+          end
         end
 
         if system.name ~= "" then
