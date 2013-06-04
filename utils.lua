@@ -1,8 +1,15 @@
-output = ""
+local output = ""
 
 function writeOutput(line)
   output = output .. line .. "\n"
   print(line)
+end
+
+function drawOutput()
+  love.graphics.setColor(0, 0, 0, 160)
+  love.graphics.print(output, 20, 22)
+  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.print(output, 20, 20)
 end
 
 function try(condition, errorMessage, successMessage)
@@ -44,7 +51,7 @@ function testFile(file)
   end
 end
 
-function testOutput(command)
+function readOutput(command)
   -- Bugfix: Love 0.8.0 has no io.popen on Mac, 0.9.0 will have
   -- Create a temporary file and redirect command output to it
   if not io.popen then
@@ -55,7 +62,6 @@ function testOutput(command)
         local t = f:read("*all")
         f:close()
         os.execute("rm " .. temp)
-        print("temporary file used")
         return t
       else
         return ""
