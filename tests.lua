@@ -1,8 +1,9 @@
 function resetAll()
   system = {
-    name = '',
+    id = '',
     paths = {},
     path = '',
+    name = '',
     sep = '',
     arch = '',
     icon = nil
@@ -30,7 +31,7 @@ function resetAll()
   }
   createdLoveFile = false
   createdExecutable = false
-  numCreationSteps = 11
+  numCreationSteps = 12
   oldCreationProgress = 0
   creationProgress = 1
 end
@@ -59,9 +60,9 @@ local function testOperatingSystem()
     for _, p in pairs(system.paths) do
       if testDir(p) == true then
         system.path = p
-        system.name = s.system.name
+        system.id = s.system.id
         system.sep = s.system.sep
-        system.icon = love.graphics.newImage("data/" .. system.name .. ".png")
+        system.icon = love.graphics.newImage("data/" .. system.id .. ".png")
         archivers = s.archivers
         love2d.name = s.love2d.name
         love2d.paths = s.love2d.paths
@@ -76,23 +77,97 @@ local function testOperatingSystem()
     if found == true then break end
   end
 
-  return try(system.name == "", "Error: Unknown operating system!", "Operating system: " .. system.name)
+  return try(system.id == "", "Error: Unknown operating system!", "Operating system: " .. system.id)
+end
+
+local function testDistribution()
+  if system.id == "Linux" then
+    -- File patterns to test against
+    local tests =
+    {
+      "/etc/<distro>-release",
+      "/etc/<distro>_release",
+      "/etc/<distro>-version",
+      "/etc/<distro>_version"
+    }
+
+    for _, v in pairs(tests) do
+      -- Try to guess distro name from matching filenames
+      -- This is equal to 'dir /etc/*-release', etc.
+      local replaced = v:gsub("<distro>", "*")
+      local output = readOutput("dir " .. replaced)
+
+      if output ~= "" then
+        -- Extract distro name from filename
+        local replaced = v:gsub("<distro>", "(%%a+)")
+        local guess = output:match(replaced) or ""
+        local release = ""
+
+        if guess == "lsb" then
+          -- LSB distro: let's assume it's Ubuntu by default
+          system.name = "ubuntu"
+          local output = readOutput("cat /etc/lsb-release")
+
+          if output ~= "" then
+            -- Extract distro name and release if possible
+            system.name = output:match("DISTRIB_ID=(%a+)") or ""
+            release = output:match("DISTRIB_RELEASE=(%d+)") or ""
+          end
+
+        elseif guess ~= "" then
+          -- Non-LSB distro: extract release by pattern matching
+          system.name = guess
+          local replaced = v:gsub("<distro>", system.name)
+          local output = readOutput("cat " .. replaced)
+
+          if output ~= "" then release = output:match("%d+.%d+") or output:match("%d+") or "" end
+        end
+
+        if system.name ~= "" then
+          -- Distro name starts with uppercase
+          system.name = system.name:gsub("^%l", string.upper)
+          -- Add release to distro name
+          if release ~= "" then system.name = system.name .. "-" .. release end
+        end
+
+        break
+      end
+    end
+
+    if system.name ~= "" then
+      writeOutput("Distribution: " .. system.name)
+    else
+      writeOutput("Unknown distribution")
+    end
+  else
+    -- Windows and MacOSX binaries will run fine no matter which OS version it is
+    system.name = system.id
+  end
+
+  return true
 end
 
 -- This piece of code is originally from https://github.com/lualatex/lualibs/blob/master/lualibs-os.lua
 local function testArchitecture()
-  if system.name == "Windows" then
+  if system.id == "Windows" then
     system.arch = os.getenv("PROCESSOR_ARCHITECTURE") or ""
 
-  elseif system.name == "Linux" then
-    system.arch = os.getenv("HOSTTYPE") or testOutput("uname -m") or ""
+  elseif system.id == "Linux" then
+    system.arch = os.getenv("HOSTTYPE") or readOutput("uname -m") or ""
 
-  elseif system.name == "MacOSX" then
-    system.arch = testOutput("echo $HOSTTYPE") or ""
+  elseif system.id == "MacOSX" then
+    system.arch = readOutput("echo $HOSTTYPE") or ""
   end
 
-  if system.arch ~= "" then system.arch = "-" .. system.arch:gsub("[\n\r]", "") end
-  writeOutput("System architecture: " .. system.arch)
+  system.arch = system.arch:gsub("[\n\r]", "")
+
+  if system.arch ~= "" then
+    writeOutput("Architecture: " .. system.arch)
+    system.arch = "-" .. system.arch
+  else
+    writeOutput("Unknown architecture")
+  end
+  
   return true
 end
 
@@ -124,7 +199,7 @@ local function testLove2D()
       writeOutput("Love2D path: " .. love2d.path)
 
       -- Seek for .DLLs on Windows
-      if system.name == "Windows" then
+      if system.id == "Windows" then
         if testFile(love2d.path .. "SDL.dll") == false or
            testFile(love2d.path .. "DevIL.dll") == false or
            testFile(love2d.path .. "OpenAL32.dll") == false then
@@ -222,34 +297,37 @@ function createBinaries()
     writeOutput("Detecting operating system ...")
     creationProgress = testOperatingSystem() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 3 then -- Detect architecture
+  elseif creationProgress == 3 then -- Detect distribution
+    creationProgress = testDistribution() == true and creationProgress + 1 or -1
+
+  elseif creationProgress == 4 then -- Detect architecture
     creationProgress = testArchitecture() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 4 then -- Does the project exists?
+  elseif creationProgress == 5 then -- Does the project exists?
     writeOutput("\nSetting up project details ...")
     creationProgress = testProject() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 5 then -- Does it contain main.lua?
+  elseif creationProgress == 6 then -- Does it contain main.lua?
     creationProgress = testMainLua() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 6 then -- Search for LOVE framework
+  elseif creationProgress == 7 then -- Search for LOVE framework
     writeOutput("\nSearching for required applications ...")
     creationProgress = testLove2D() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 7 then -- Find an archive manager
+  elseif creationProgress == 8 then -- Find an archive manager
     creationProgress = testArchiveManagers() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 8 then -- Create directory structure
+  elseif creationProgress == 9 then -- Create directory structure
     writeOutput("\nCreating binaries ...")
     creationProgress = createDirectories() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 9 then -- Create .love file
+  elseif creationProgress == 10 then -- Create .love file
     creationProgress = createLove() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 10 then -- Create native executable
+  elseif creationProgress == 11 then -- Create native executable
     creationProgress = createExecuatble() == true and creationProgress + 1 or -1
 
-  elseif creationProgress == 11 then
+  elseif creationProgress == 12 then
     writeOutput("\nDone!\n")
   end
 end

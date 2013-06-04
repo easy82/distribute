@@ -5,7 +5,7 @@ specs = {
   {
     system =
     {
-      name = 'MacOSX',
+      id = 'MacOSX',
       paths =
       {
         '/Applications',
@@ -51,7 +51,7 @@ specs = {
   {
     system =
     {
-      name = 'Linux',
+      id = 'Linux',
       paths =
       {
         '/home',
@@ -98,7 +98,7 @@ specs = {
   {
     system =
     {
-      name = 'Windows',
+      id = 'Windows',
       paths =
       {
         'C:\\Windows',

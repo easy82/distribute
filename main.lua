@@ -66,8 +66,5 @@ function love.draw()
   end
 
   -- Draw text
-  love.graphics.setColor(0, 0, 0, 160)
-  love.graphics.print(output, 20, 22)
-  love.graphics.setColor(255, 255, 255, 255)
-  love.graphics.print(output, 20, 20)
+  drawOutput()
 end
