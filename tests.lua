@@ -111,7 +111,7 @@ local function testDistribution()
 
           if output ~= "" then
             -- Extract distro name and release if possible
-            system.name = output:match("ID=(%a+)") or ""
+            system.name = output:match("NAME=(%a+)") or output:match("ID=(%a+)") or ""
             release = output:match("VERSION_ID=(%d+.%d+)") or output:match("VERSION_ID=(%d+)") or ""
           end
 
