@@ -27,7 +27,13 @@ function resetAll()
   }
   project = {
     name = '',
-    path = ''
+    path = '',
+    url = '',
+    size = 0,
+    title = '',
+    author = '',
+    version = '',
+    identity = ''
   }
   createdLoveFile = false
   createdExecutable = false
@@ -302,46 +308,50 @@ local function createExecuatble()
   return createdExecutable
 end
 
+local function advanceProgress(command)
+  creationProgress = command == true and creationProgress + 1 or -1
+end
+
 function createBinaries()
   if oldCreationProgress == creationProgress then return end
   oldCreationProgress = creationProgress
 
   if creationProgress == 1 then -- Is there any arguments?
-    creationProgress = testArgument() == true and creationProgress + 1 or -1
+    advanceProgress(testArgument())
 
   elseif creationProgress == 2 then -- Detect operating system
     writeOutput("Detecting operating system ...")
-    creationProgress = testOperatingSystem() == true and creationProgress + 1 or -1
+    advanceProgress(testOperatingSystem())
 
   elseif creationProgress == 3 then -- Detect distribution
-    creationProgress = testDistribution() == true and creationProgress + 1 or -1
+    advanceProgress(testDistribution())
 
   elseif creationProgress == 4 then -- Detect architecture
-    creationProgress = testArchitecture() == true and creationProgress + 1 or -1
+    advanceProgress(testArchitecture())
 
   elseif creationProgress == 5 then -- Does the project exists?
     writeOutput("\nSetting up project details ...")
-    creationProgress = testProject() == true and creationProgress + 1 or -1
+    advanceProgress(testProject())
 
   elseif creationProgress == 6 then -- Does it contain main.lua?
-    creationProgress = testMainLua() == true and creationProgress + 1 or -1
+    advanceProgress(testMainLua())
 
   elseif creationProgress == 7 then -- Search for LOVE framework
     writeOutput("\nSearching for required applications ...")
-    creationProgress = testLove2D() == true and creationProgress + 1 or -1
+    advanceProgress(testLove2D())
 
   elseif creationProgress == 8 then -- Find an archive manager
-    creationProgress = testArchiveManagers() == true and creationProgress + 1 or -1
+    advanceProgress(testArchiveManagers())
 
   elseif creationProgress == 9 then -- Create directory structure
     writeOutput("\nCreating binaries ...")
-    creationProgress = createDirectories() == true and creationProgress + 1 or -1
+    advanceProgress(createDirectories())
 
   elseif creationProgress == 10 then -- Create .love file
-    creationProgress = createLove() == true and creationProgress + 1 or -1
+    advanceProgress(createLove())
 
   elseif creationProgress == 11 then -- Create native executable
-    creationProgress = createExecuatble() == true and creationProgress + 1 or -1
+    advanceProgress(createExecuatble())
 
   elseif creationProgress == 12 then
     writeOutput("\nDone!\n")

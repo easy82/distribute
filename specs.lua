@@ -1,7 +1,7 @@
 -- Editable platform specific parameters and instructions goes here
 -- Mac should be checked before Linux because Mac has /Applications while both Linux and Mac has /home
 specs = {
-  -- MacOSX
+  -- MacOSX specific commands --------------------------------------------------------------------
   {
     system =
     {
@@ -47,7 +47,7 @@ specs = {
     }
   },
 
-  -- Linux
+  -- Linux specific commands --------------------------------------------------------------------
   {
     system =
     {
@@ -91,10 +91,34 @@ specs = {
     {
       loved = 'love "<project.path>bin/Love/<project.name>.love"',
       native = '"<project.path>bin/<system.name><system.arch>/<project.name>"'
+    },
+    deb =
+    {
+      control =
+        'Package: <project.identity>\n' .. 
+        'Version: <project.version>\n' .. 
+        'Architecture: <system.arch>\n' .. 
+        'Homepage: <project.url>\n' .. 
+        'Maintainer: <project.author>\n' .. 
+        'Installed-Size: <project.size>\n' .. 
+        'Depends: love\n' .. 
+        'Section: games\n' .. 
+        'Priority: optional\n' .. 
+        'Description: <project.title>',
+
+      postinst =
+        '#!/bin/sh\n' ..
+        'gtk-update-icon-cache --force /usr/share/icons/hicolor\n' ..
+        'if [ "$1" = "configure" ] && [ -x "`which update-menus 2>/dev/null`" ]; then update-menus; fi',
+
+      postrm =
+        '#!/bin/sh\n' ..
+        'gtk-update-icon-cache --force /usr/share/icons/hicolor\n' ..
+        'if [ -x "`which update-menus 2>/dev/null`" ]; then update-menus; fi',
     }
   },
 
-  -- Windows
+  -- Windows specific commands --------------------------------------------------------------------
   {
     system =
     {
@@ -190,6 +214,12 @@ function replaceKeywords(str)
 
   s = project.name and s:gsub("<project.name>", project.name) or s
   s = project.path and s:gsub("<project.path>", project.path) or s
+  s = project.url and s:gsub("<project.url>", project.url) or s
+  s = project.size and s:gsub("<project.size>", project.size) or s
+  s = project.title and s:gsub("<project.title>", project.title) or s
+  s = project.author and s:gsub("<project.author>", project.author) or s
+  s = project.version and s:gsub("<project.version>", project.version) or s
+  s = project.identity and s:gsub("<project.identity>", project.identity) or s
 
   s = archiver.name and s:gsub("<archiver.name>", archiver.name) or s
   s = archiver.path and s:gsub("<archiver.path>", archiver.path) or s

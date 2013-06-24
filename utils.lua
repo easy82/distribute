@@ -51,6 +51,17 @@ function testFile(file)
   end
 end
 
+function writeFile(file, text)
+  local f = io.open(file, "w")
+  if f ~= nil then
+    f:write(text)
+    f:close()
+    return true
+  else
+    return false
+  end
+end
+
 function readOutput(command)
   -- Bugfix: Love 0.8.0 has no io.popen on Mac, 0.9.0 will have
   -- Create a temporary file and redirect command output to it
